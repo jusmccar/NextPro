@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { Navbar } from "@/components/web/Navbar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
