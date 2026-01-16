@@ -20,10 +20,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 export default function CreateBlogPage() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const mutation = useMutation(api.blogs.createBlog);
 
   const form = useForm({
@@ -35,9 +41,14 @@ export default function CreateBlogPage() {
   });
 
   function onSubmit(values: z.infer<typeof createSchema>) {
-    mutation({
-      title: values.title,
-      content: values.content,
+    startTransition(() => {
+      mutation({
+        title: values.title,
+        content: values.content,
+      });
+
+      toast.success("Blog created successfully");
+      router.push("/");
     });
   }
 
@@ -96,7 +107,16 @@ export default function CreateBlogPage() {
                 )}
               />
 
-              <Button>Create</Button>
+              <Button disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  <span>Create</span>
+                )}
+              </Button>
             </FieldGroup>
           </form>
         </CardContent>
