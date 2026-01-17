@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
 
 export const createBlog = mutation({
@@ -18,5 +18,13 @@ export const createBlog = mutation({
     });
 
     return blogArtticle;
+  },
+});
+
+export const getBlogs = query({
+  args: {},
+  handler: async (ctx) => {
+    const blogs = await ctx.db.query("blogs").order("desc").collect();
+    return blogs;
   },
 });
