@@ -1,5 +1,6 @@
 "use client";
 
+import { createBlogAction } from "@/app/actions";
 import { createSchema } from "@/app/schemas/blog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,6 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import z from "zod";
 
 export default function CreateBlogPage() {
@@ -41,14 +41,8 @@ export default function CreateBlogPage() {
   });
 
   function onSubmit(values: z.infer<typeof createSchema>) {
-    startTransition(() => {
-      mutation({
-        title: values.title,
-        content: values.content,
-      });
-
-      toast.success("Blog created successfully");
-      router.push("/");
+    startTransition(async () => {
+      await createBlogAction(values);
     });
   }
 
