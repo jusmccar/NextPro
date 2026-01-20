@@ -50,7 +50,21 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-2">
-        {isLoading ? null : isAuthenticated ? (
+        {isLoading || !isAuthenticated ? (
+          <>
+            <Link className={buttonVariants()} href="/auth/signup">
+              Sign Up
+            </Link>
+            <Link
+              className={buttonVariants({
+                variant: "outline",
+              })}
+              href="/auth/login"
+            >
+              Login
+            </Link>
+          </>
+        ) : (
           <Button
             onClick={() =>
               authClient.signOut({
@@ -68,20 +82,6 @@ export function Navbar() {
           >
             Logout
           </Button>
-        ) : (
-          <>
-            <Link className={buttonVariants()} href="/auth/signup">
-              Sign Up
-            </Link>
-            <Link
-              className={buttonVariants({
-                variant: "outline",
-              })}
-              href="/auth/login"
-            >
-              Login
-            </Link>
-          </>
         )}
         <ThemeToggle />
       </div>
