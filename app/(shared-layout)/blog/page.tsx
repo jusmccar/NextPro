@@ -26,37 +26,38 @@ export default function BlogPage() {
 }
 
 async function BlogList() {
-  const data = await fetchQuery(api.blogs.getBlogs);
+  const blogs = await fetchQuery(api.blogs.getBlogs);
 
   return (
     <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-3">
-      {data?.map((article) => (
-        <Card key={article._id} className="pt-0">
+      {blogs?.map((blog) => (
+        <Card key={blog._id} className="pt-0">
           <div className="relative h-48 w-full overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1562749348-ed9e37507658?q=80&w=2696&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={
+                blog.imageUrl ??
+                "https://images.unsplash.com/photo-1562749348-ed9e37507658?q=80&w=2696&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
               alt="image"
               fill
-              className="rounded-t-lg"
+              className="rounded-t-lg object-cover"
             />
           </div>
 
           <CardContent>
-            <Link href={`/blog/${article._id}`}>
+            <Link href={`/blog/${blog._id}`}>
               <h1 className="text-2xl font-bold hover:text-primary">
-                {article.title}
+                {blog.title}
               </h1>
             </Link>
-            <p className="text-muted-foreground line-clamp-3">
-              {article.content}
-            </p>
+            <p className="text-muted-foreground line-clamp-3">{blog.content}</p>
           </CardContent>
           <CardFooter>
             <Link
               className={buttonVariants({
                 className: "w-full",
               })}
-              href={`/blog/${article._id}`}
+              href={`/blog/${blog._id}`}
             >
               Read more
             </Link>

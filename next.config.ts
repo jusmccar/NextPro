@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         port: "",
       },
+      {
+        hostname: "wandering-orca-547.convex.cloud",
+        protocol: "https",
+        port: "",
+      },
     ],
   },
 };
