@@ -47,6 +47,29 @@ export const getBlogs = query({
   },
 });
 
+export const getBlogById = query({
+  args: {
+    blogId: v.id("blogs"),
+  },
+  handler: async (ctx, args) => {
+    const blog = await ctx.db.get(args.blogId);
+
+    if (!blog) {
+      return null;
+    }
+
+    const resolvedImageUrl =
+      blog?.imageStorageId !== undefined
+        ? await ctx.storage.getUrl(blog.imageStorageId)
+        : null;
+
+    return {
+      ...blog,
+      imageUrl: resolvedImageUrl,
+    };
+  },
+});
+
 export const generateImageUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
