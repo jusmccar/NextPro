@@ -10,7 +10,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useMutation, useQuery } from "convex/react";
+import { Preloaded, useMutation, usePreloadedQuery } from "convex/react";
 import { Loader2, MessagesSquare } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTransition } from "react";
@@ -18,12 +18,12 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-export function CommentSection() {
+export function CommentSection(props: {
+  preloadedComments: Preloaded<typeof api.comments.getCommentsByBlogId>;
+}) {
   const [isPending, startTransition] = useTransition();
   const params = useParams<{ blogId: Id<"blogs"> }>();
-  const data = useQuery(api.comments.getCommentsByBlogId, {
-    blogId: params.blogId,
-  });
+  const data = usePreloadedQuery(props.preloadedComments);
   const createComment = useMutation(api.comments.createComment);
 
   const form = useForm({

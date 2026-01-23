@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/web/CommentSection";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +18,13 @@ export default async function BlogIdPage({ params }: BlogIdPageProps) {
   const { blogId } = await params;
 
   const blog = await fetchQuery(api.blogs.getBlogById, { blogId: blogId });
+
+  const preloadedComments = await preloadQuery(
+    api.comments.getCommentsByBlogId,
+    {
+      blogId: blogId,
+    }
+  );
 
   if (!blog) {
     return (
@@ -67,7 +74,7 @@ export default async function BlogIdPage({ params }: BlogIdPageProps) {
 
         <Separator className="my-8" />
 
-        <CommentSection />
+        <CommentSection preloadedComments={preloadedComments} />
       </div>
     </div>
   );
