@@ -17,7 +17,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "NextPro",
-  description: "NextPro",
+  description: "NextPro Blog",
+  authors: [{ name: "Justin McCartney", url: "https://github.com/jusmccar" }],
+  creator: "Justin McCartney",
+  publisher: "Justin McCartney",
+  category: "blog",
+  keywords: "nextjs, react, convex, better-auth, blog",
 };
 
 export default function RootLayout({
