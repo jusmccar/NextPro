@@ -17,14 +17,12 @@ interface BlogIdPageProps {
 export default async function BlogIdPage({ params }: BlogIdPageProps) {
   const { blogId } = await params;
 
-  const blog = await fetchQuery(api.blogs.getBlogById, { blogId: blogId });
-
-  const preloadedComments = await preloadQuery(
-    api.comments.getCommentsByBlogId,
-    {
+  const [blog, preloadedComments] = await Promise.all([
+    await fetchQuery(api.blogs.getBlogById, { blogId: blogId }),
+    await preloadQuery(api.comments.getCommentsByBlogId, {
       blogId: blogId,
-    }
-  );
+    }),
+  ]);
 
   if (!blog) {
     return (
