@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,6 +13,23 @@ interface BlogIdPageProps {
   params: Promise<{
     blogId: Id<"blogs">;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: BlogIdPageProps): Promise<Metadata> {
+  const { blogId } = await params;
+
+  const blog = await fetchQuery(api.blogs.getBlogById, { blogId: blogId });
+
+  if (!blog) {
+    return {};
+  }
+
+  return {
+    title: blog.title,
+    description: blog.content,
+  };
 }
 
 export default async function BlogIdPage({ params }: BlogIdPageProps) {
