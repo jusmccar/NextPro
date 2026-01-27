@@ -1,8 +1,10 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { BlogPresence } from "@/components/web/BlogPresence";
 import { CommentSection } from "@/components/web/CommentSection";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getToken } from "@/lib/auth-server";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
@@ -33,13 +35,14 @@ export async function generateMetadata({
 }
 
 export default async function BlogIdPage({ params }: BlogIdPageProps) {
-  const { blogId } = await params;
+  const [{ blogId }, token] = await Promise.all([params, getToken()]);
 
-  const [blog, preloadedComments] = await Promise.all([
-    await fetchQuery(api.blogs.getBlogById, { blogId: blogId }),
-    await preloadQuery(api.comments.getCommentsByBlogId, {
+  const [blog, preloadedComments, userId] = await Promise.all([
+    fetchQuery(api.blogs.getBlogById, { blogId: blogId }),
+    preloadQuery(api.comments.getCommentsByBlogId, {
       blogId: blogId,
     }),
+    fetchQuery(api.presence.getUserId, {}, { token }),
   ]);
 
   if (!blog) {
@@ -78,20 +81,25 @@ export default async function BlogIdPage({ params }: BlogIdPageProps) {
           {blog.title}
         </h1>
 
-        <p className="text-sm text-muted-foreground">
-          Created on: {new Date(blog._creationTime).toLocaleDateString("en-US")}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">
+            Created on:{" "}
+            {new Date(blog._creationTime).toLocaleDateString("en-US")}
+          </p>
 
-        <Separator className="my-8" />
-
-        <p className="text-lg leading-relaxed text-foreground/90 whitespace-pre-wrap">
-          {blog.content}
-        </p>
-
-        <Separator className="my-8" />
-
-        <CommentSection preloadedComments={preloadedComments} />
+          {userId && <BlogPresence roomId={blog._id} userId={userId} />}
+        </div>
       </div>
+
+      <Separator className="my-8" />
+
+      <p className="text-lg leading-relaxed text-foreground/90 whitespace-pre-wrap">
+        {blog.content}
+      </p>
+
+      <Separator className="my-8" />
+
+      <CommentSection preloadedComments={preloadedComments} />
     </div>
   );
 }
