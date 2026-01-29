@@ -3,12 +3,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
+import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-
-export const dynamic = "force-static";
-export const revalidate = 30;
 
 export default function BlogPage() {
   return (
@@ -21,14 +19,16 @@ export default function BlogPage() {
           Insights, thoughts, and trends from our team.
         </p>
       </div>
-      <Suspense fallback={<BlogListLoading />}>
-        <BlogList />
-      </Suspense>
+      <BlogList />
     </div>
   );
 }
 
 async function BlogList() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("blog");
+
   const blogs = await fetchQuery(api.blogs.getBlogs);
 
   return (
@@ -66,23 +66,6 @@ async function BlogList() {
             </Link>
           </CardFooter>
         </Card>
-      ))}
-    </div>
-  );
-}
-
-function BlogListLoading() {
-  return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {[...Array(3)].map((_, i) => (
-        <div key={i} className="flex flex-col space-y-3">
-          <Skeleton className="h-48 w-full rounded-xl" />
-          <div className="flex flex-col space-y-2">
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-        </div>
       ))}
     </div>
   );
