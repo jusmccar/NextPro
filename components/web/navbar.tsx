@@ -66,7 +66,9 @@ export function Navbar() {
           </>
         ) : (
           <Button
-            className="cursor-pointer"
+            className={buttonVariants({
+              variant: "outline",
+            })}
             onClick={() =>
               authClient.signOut({
                 fetchOptions: {
