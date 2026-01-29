@@ -66,6 +66,7 @@ export function Navbar() {
           </>
         ) : (
           <Button
+            className="cursor-pointer"
             onClick={() =>
               authClient.signOut({
                 fetchOptions: {
