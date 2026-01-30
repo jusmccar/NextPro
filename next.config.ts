@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
         port: "",
       },
       {
-        hostname: "wandering-orca-547.convex.cloud",
+        hostname: "striped-mandrill-357.convex.cloud",
         protocol: "https",
         port: "",
       },
